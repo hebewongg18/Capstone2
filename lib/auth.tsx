@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import { supabase } from "./supabase" // ✅ this imports the browser client
+import { getSupabase } from "./supabase"
+const supabase = getSupabase()
 import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 export interface User {
