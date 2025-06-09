@@ -2,8 +2,8 @@
 
 import * as React from "react"
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import { supabase } from "./supabase"
-import type { User as SupabaseUser } from '@supabase/supabase-js'
+import { supabase } from "./supabase" // ✅ this imports the browser client
+import type { User as SupabaseUser } from "@supabase/supabase-js"
 
 export interface User {
   id: string
@@ -37,9 +37,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user) {
           const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
+            .from("profiles")
+            .select("*")
+            .eq("id", session.user.id)
             .single()
 
           if (profile) {
@@ -50,12 +50,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               avatar: profile.avatar_url,
               role: profile.role,
               joinDate: profile.created_at,
-              favoriteSpecies: profile.favorite_species || []
+              favoriteSpecies: profile.favorite_species || [],
             })
           }
         }
       } catch (error) {
-        console.error('Error checking auth status:', error)
+        console.error("Error checking auth status:", error)
       } finally {
         setIsLoading(false)
       }
@@ -63,12 +63,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     checkUser()
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (_, session) => {
       if (session?.user) {
         const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
+          .from("profiles")
+          .select("*")
+          .eq("id", session.user.id)
           .single()
 
         if (profile) {
@@ -79,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             avatar: profile.avatar_url,
             role: profile.role,
             joinDate: profile.created_at,
-            favoriteSpecies: profile.favorite_species || []
+            favoriteSpecies: profile.favorite_species || [],
           })
         }
       } else {
@@ -106,13 +108,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  const register = async (name: string, email: string, password: string): Promise<string | null> => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<string | null> => {
     try {
       setIsLoading(true)
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { name } }
+        options: { data: { name } },
       })
       if (authError) return authError.message
       if (!authData?.user) return "Signup failed: no user returned"
@@ -123,7 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         name,
         role: "user",
         created_at: new Date().toISOString(),
-        favorite_species: []
+        favorite_species: [],
       })
       return null
     } catch (error: any) {
@@ -152,11 +158,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           name: userData.name,
           avatar_url: userData.avatar,
           role: userData.role,
-          favorite_species: userData.favoriteSpecies
+          favorite_species: userData.favoriteSpecies,
         })
         .eq("id", user.id)
       if (error) throw error
-      setUser(prev => prev ? { ...prev, ...userData } : null)
+      setUser((prev) => (prev ? { ...prev, ...userData } : null))
       return true
     } catch (error) {
       console.error("Update user error:", error)
