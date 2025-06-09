@@ -1,15 +1,24 @@
-console.log("🔍 ENV: ", {
-  url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.slice(0, 10) + "..."
-})
-
 import { createClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+let supabase: SupabaseClient | null = null
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+export const getSupabase = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  console.log("🔍 ENV:", {
+    url,
+    key: key?.slice(0, 10) + "..."
+  })
+
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables')
+  }
+
+  if (!supabase) {
+    supabase = createClient(url, key)
+  }
+
+  return supabase
 }
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey) 
