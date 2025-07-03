@@ -19,7 +19,7 @@ export default function Home() {
       <section className="relative w-full h-[70vh] flex items-center">
         <div className="absolute inset-0 z-0">
           <Image
-           src="/placeholder.iStock-589120498-1920?height=1080&width=1920&text=Ocean"
+           src="/iStock-589120498-1920?height=1080&width=1920&text=Ocean"
             alt="Ocean"
             fill
             className="object-cover brightness-50"
